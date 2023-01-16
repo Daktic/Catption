@@ -44,4 +44,4 @@ Tasks:
 #Documentation
 
 ## Helpful info
-[Sequelize](https://sequelize.org/docs/v6/other-topics/migrations/) => version control for db changes.
+[Sequelize](https://sequelize.org/docs/v6/) => version control for db changes.
