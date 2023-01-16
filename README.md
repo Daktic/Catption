@@ -40,3 +40,8 @@ Tasks:
   - Using Swagger, create a documentation for your API. (Might use DBX Paper)
 - Deploy your application with ~~Heroku~~ ??? lightsail?
 - Next steps?
+
+#Documentation
+
+## Helpful info
+[Sequelize](https://sequelize.org/docs/v6/other-topics/migrations/) => version control for db changes.
