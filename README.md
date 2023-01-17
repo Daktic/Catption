@@ -9,12 +9,12 @@ As you create your endpoints you will be testing them on Postman to ensure that 
 Once the server is running, you will use a localized cache to optimize the performance of frequently requested data. 
 
 Tasks:
-- Plan Your Project
+- ~~Plan Your Project~~
   - Visualize your end result. What is it built with? What can it do?
   - Make sure that it satisfies all of the project objectives.
   - Make a timeline for yourself and avoid the temptation to build things that aren’t required. 
   - Setting firm boundaries and deadlines will keep you on track and prevent scope creep.
-- Configure sequelize and create your database
+- ~~Configure sequelize and create your database~~
   - Create a .sequelizerc file in your project’s root folder and configure your database(DB) connections.
   - In your terminal, create a PostgreSQL database with a name of your choosing.
 - Create your model(s)
