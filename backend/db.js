@@ -7,6 +7,11 @@ const postgresUser = process.env.POSTGRES_USERNAME;
 const postgresPass = process.env.POSTGRES_PASSWORD;
 const sequelize = new Sequelize(`postgres://${postgresUser}:${postgresPass}@localhost:5432/photo_contest`);
 
+
+
+// This section seems totally unnecessary.
+// Not sure what to do with it yet.
+// seems import to have a sequelize connection somewhere
 const users = require('./models/users');
 const photos = require('./models/photos');
 const comments = require('./models/comments');
