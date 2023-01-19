@@ -16,7 +16,7 @@ photoRoute.post('/', async (req, res) => {
     return await photos.create({
         name: photoName,
         posterId: userId,
-        source: photoSource
+        src: photoSource
     })
 })
 photoRoute.get('/:id', async (req, res) => {
