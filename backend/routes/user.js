@@ -1,14 +1,18 @@
 const express = require("express");
 const bcrypt = require('bcrypt');
-const {users} = require('../db');
+const {users} = require('../models/users');
 
 const saltRounds = 42;
 
 const userRoute = express.Router();
 
-userRoute.get('/:id', (req, res) => {
+userRoute.get('/:id', async (req, res) => {
     const userId = req.params.id;
-
+    return await users.findAll({
+        where: {
+            id: userId
+        }
+    })
 })
 
 userRoute.post('/', (req, res) => {
