@@ -10,8 +10,16 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
-        caption: {
+        name: {
             type: DataTypes.STRING
+        },
+        caption: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        source: {
+            type:DataTypes.STRING,
+            allowNull: false
         },
         posterId: {
             type: DataTypes.INTEGER,
