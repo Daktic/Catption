@@ -1,8 +1,7 @@
-const {Model, DataTypes} = require("sequelize");
+const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-    class Photo extends Model {
-    }
+    class Photo extends Model {}
 
     Photo.init({
         id: {
@@ -17,19 +16,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        source: {
-            type:DataTypes.STRING,
-            allowNull: false
-        },
-        posterId: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: User,
-                key: 'id'
-            }
-        },
         src: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false
         }
     }, {sequelize});
     return Photo;

@@ -1,4 +1,4 @@
-const {Model, DataTypes} = require("sequelize");
+const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
     class Comment extends Model {
@@ -9,20 +9,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
-        },
-        userId: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: User,
-                key: 'id'
-            }
-        },
-        photoId: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: Photo,
-                key: 'id'
-            }
         },
         commentText: {
             type: DataTypes.STRING
