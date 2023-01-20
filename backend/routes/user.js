@@ -1,25 +1,34 @@
 const express = require("express");
 const bcrypt = require('bcrypt');
-const {users} = require('../models/users');
+const {DataTypes, Model} = require('sequelize');
+const sequelize = require('../db').sequelize;
 
-const saltRounds = 42;
+// Bring in Model
+const User = require('../models/users')(sequelize, DataTypes,
+    Model);
+
+const saltRounds = 1;
 
 const userRoute = express.Router();
 
 userRoute.get('/:id', async (req, res) => {
     const userId = req.params.id;
-    return await users.findAll({
-        where: {
-            id: userId
-        }
-    })
+    res.send(
+        await User.findAll({
+            attributes: ['id', 'username'],
+            where: {
+                id: userId
+            }
+        })
+    )
 })
 
-userRoute.post('/', (req, res) => {
+userRoute.post('/', async (req, res) => {
     const username = req.body.username;
-    bcrypt.hash(req.body.password, saltRounds, async function (err, hash) {
-       return await users.create({username:username, password:hash}) //return UserId
-    })
+    const hashed_password = await  bcrypt.hash(req.body.password, saltRounds);
+    res.send(
+        await User.create({username:username, password:hashed_password}) //return UserId
+    )
 })
 
 
