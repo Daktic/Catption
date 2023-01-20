@@ -10,6 +10,22 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true
         },
+        photoId: {
+            allowNull: false,
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'Photos',
+                key: 'id'
+            }
+        },
+        userId: {
+            allowNull: false,
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'Users',
+                key: 'id'
+            }
+        },
         commentText: {
             type: DataTypes.STRING
         }
