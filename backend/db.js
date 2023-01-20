@@ -39,3 +39,6 @@ CommentModel.belongsTo(PhotoModel);
 
 sequelize.sync({force: true});
 
+module.exports ={
+    sequelize:sequelize
+}
