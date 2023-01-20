@@ -12,11 +12,30 @@ const sequelize = new Sequelize(`postgres://${postgresUser}:${postgresPass}@loca
 // This section seems totally unnecessary.
 // Not sure what to do with it yet.
 // seems import to have a sequelize connection somewhere
-const users = require('./models/users');
-const photos = require('./models/photos');
-const comments = require('./models/comments');
+
+const User = require('./models/users');
+const Photo = require('./models/photos');
+const Comment = require('./models/comments');
 
 
-module.exports = {users, photos, comments};
+const UserModel = User(sequelize, DataTypes);
+const PhotoModel = Photo(sequelize, DataTypes);
+const CommentModel = Comment(sequelize, DataTypes);
 
+UserModel.hasMany(PhotoModel, {
+    foreignKey: 'id'
+});
+PhotoModel.belongsTo(UserModel);
+
+ UserModel.hasMany(CommentModel, {
+     foreignKey: 'id'
+ });
+ CommentModel.belongsTo(UserModel);
+
+ PhotoModel.hasMany(CommentModel, {
+     foreignKey: 'id'
+ });
+CommentModel.belongsTo(PhotoModel);
+
+sequelize.sync({force: true});
 
