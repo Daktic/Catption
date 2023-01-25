@@ -25,6 +25,7 @@ userRoute.get('/:id', async (req, res) => {
 
 userRoute.post('/', async (req, res) => {
     const username = req.body.username;
+    console.log(req.body)
     const hashed_password = await  bcrypt.hash(req.body.password, saltRounds);
     res.send(
         await User.create({username:username, password:hashed_password}) //return UserId

@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 
-require('dotenv').config({path:__dirname+'/../.env'})
+require('dotenv').config({path:__dirname+'/.env'})
 
 //initialize the database with the propper username and password
 const postgresUser = process.env.POSTGRES_USERNAME;
