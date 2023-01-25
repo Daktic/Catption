@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const userRoute = require("./routes/user");
 const photoRoute = require("./routes/photos");
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 const sessions = require('express-session');
 const {sequelize} = require("./db");
 const {DataTypes, Model} = require("sequelize");
@@ -10,7 +11,8 @@ const User = require('./models/users')(sequelize, DataTypes,
     Model);
 const app = express()
 
-app.use(bodyParser.json())
+app.use(cors());
+app.use(bodyParser.json());
 app.use('/user', userRoute);
 app.use('/photo', photoRoute);
 
