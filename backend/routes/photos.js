@@ -13,7 +13,7 @@ const photoRoute = express.Router();
 
 photoRoute.get('/', async (req, res) => {
     res.send(await Photo.findAll({
-        attributes: ['name', 'caption', 'src']
+        attributes: ['id', 'name', 'caption', 'src']
     }))
 })
 photoRoute.post('/', async (req, res) => {
