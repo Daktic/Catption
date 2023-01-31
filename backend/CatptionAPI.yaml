@@ -1,0 +1,86 @@
+swagger: "2.0"
+info:
+  title: Sample API
+  description: API description in Markdown.
+  version: 1.0.0
+host: api.example.com
+schemes:
+  - https
+paths:
+  /:
+    get:
+      summary: Serves the homepage
+      produces:
+        - application/html
+      responses:
+        200:
+          description: OK
+        400:
+          description: Error
+  /login:
+    post:
+      summary: Logs in a user
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        400:
+          description: Error
+
+  /users:
+    get:
+      summary: Returns a list of users.
+      description: Optional extended description in Markdown.
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Creates a new user
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        400:
+          description: Error
+  /photo:
+    get:
+      summary: retrieves all photos
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        400:
+          description: Error
+    post:
+      summary: retrieves all photos
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        400:
+          description: Error
+  /photo/{id}:
+    get:
+      summary: retrieves all photos
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        400:
+          description: Error
+    post:
+      summary: creates comment on photo
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+        400:
+          description: Error
