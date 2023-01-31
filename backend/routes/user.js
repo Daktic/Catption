@@ -14,6 +14,7 @@ const saltRounds = 1;
 
 const userRoute = express.Router();
 
+
 userRoute.get('/:id', async (req, res) => {
     const userId = req.params.id;
     res.send(
@@ -24,7 +25,7 @@ userRoute.get('/:id', async (req, res) => {
             }
         })
     )
-})
+});
 userRoute.post('/', async (req, res, next) => {
     const username = req.body.username;
 
