@@ -75,7 +75,7 @@ photoRoute.get('/', async (req, res) => {
         attributes: ['id', 'name', 'caption', 'src']
     }))
 })
-photoRoute.post('/', async (req, res) => {
+photoRoute.post('/', verifyToken, async (req, res) => {
     const userId = req.query.userId;
     const photoName = req.body.photo.name;
     const photoSource = req.body.photo.src
