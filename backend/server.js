@@ -11,6 +11,7 @@ const User = require('./models/users')(sequelize, DataTypes,
     Model);
 const app = express()
 
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/user', userRoute);
