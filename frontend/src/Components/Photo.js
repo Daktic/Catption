@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link   } from 'react-router-dom';
 import axios from 'axios';
+import NavBar from "./NavBar";
+
 
 function ImageList() {
 
     const [images, setImages] = useState([]);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
         const headers = {
@@ -24,26 +28,48 @@ function ImageList() {
             });
     }, []);
 
+    useEffect(() => {
+        // check if the user has a JWT token
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('userName');
+        if (token) {
+            setIsAuthenticated(true);
+            setUsername(username)
+        } else {
+            setIsAuthenticated(false);
+        }
+    }, []);
 
 
     return (
-        <div style={{
-            display:'flex',
-            justifyContent:'center',
-            flexDirection:'column',
-            alignItems:'center'
-        }}>
-            <h1>Welcome to the Images</h1>
-            {images.map((image, index) => (
-                <Link to={`/photo/${image.id}`}
-                      key={index} >
-                    <img src={image.src}
-                         alt={image.name}
-                         id={image.id}
-                         style={{maxWidth: 600, padding: 20}}/></Link>
-            ))}
+        <div>
+            <NavBar />
+            <div style={{
+                display:'flex',
+                justifyContent:'center',
+                flexDirection:'column',
+                alignItems:'center'
+            }}>
+                <div>
+                    <h1>Welcome to <b style={{color:'gold'}}>Cat</b>ption!</h1>
+                    <h3>Please click a photo to view comments</h3>
+                    <br/> <br />
+
+                </div>
+                {images.map((image, index) => (
+                    <Link to={`/photo/${image.id}`}
+                          key={index} >
+                        <img src={image.src}
+                             alt={image.name}
+                             id={image.id}
+                             style={{maxWidth: 600, padding: 20}}/></Link>
+                ))}
+            </div>
         </div>
     );
+
+
+
 }
 
 export default ImageList;

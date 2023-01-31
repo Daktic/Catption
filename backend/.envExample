@@ -1,2 +1,3 @@
 POSTGRES_USERNAME=username
 POSTGRES_PASSWORD=password
+TOKEN_SECRET=longtokensecretstringoflettersandnumber2349875
