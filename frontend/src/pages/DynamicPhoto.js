@@ -6,6 +6,7 @@ import NavBar from "../Components/NavBar";
 
 const DynamicPhoto = () => {
     let { id } = useParams();
+
     const [image, setImage] = useState({})
     const [comments, setComments] = useState([])
 

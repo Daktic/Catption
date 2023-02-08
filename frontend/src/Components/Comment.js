@@ -1,8 +1,9 @@
 import {Box, Card, Typography, Button, TextField} from '@mui/material';
 import AddCommentIcon from '@mui/icons-material/AddComment';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
+
 const Comments = (props) => {
     let { id } = useParams();
 
@@ -16,25 +17,30 @@ const Comments = (props) => {
         setCommentText(event.target.value.toString())
     }
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = async (event) => {
         const userId = 1;
         if (event.key === 'Enter' && commentText.length > 0 < 255) {
-            axios.post('http://localhost:80/photo/' + id.toString() + `?userId=${userId}&action=createComment`,
-                {comment: commentText},
-                {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer JWT_ACCESS_TOKEN'}})
-                .then((response) => {
-                    let updatedComments = [...props.comments];
-                    updatedComments.push({commentText: commentText});
-                    props.onEnter(updatedComments);
-                    setCommentText('')
-                })
+            const urlPost = 'http://localhost:80/photo/' + id.toString() + `?userId=${userId}&action=createComment`;
+            const data = {comment: commentText};
+            const config = {headers: {'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token')}};
+            try {
+                const response = await axios.post(urlPost,data,config)
+            } catch (error) {
+                if (error.response.status === 401) {
+                    alert(error.response.data.message)
+                    window.location.href = '/login';
+                } else {
+                    console.error(error)
+                }
+
+            }
 
             setShowCommentForm(!showCommentForm)
         }
         }
 
         const handleClick = ({currentTarget}) => {
-            console.log(currentTarget.id)
+            //console.log(currentTarget.id)
             axios.post('http://localhost:80/photo/' + id.toString() + `?action=deleteComment`,
                 {commentId: currentTarget.id},
                 {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer JWT_ACCESS_TOKEN'}})
@@ -46,10 +52,20 @@ const Comments = (props) => {
                     //console.log(response)
                 })
         }
+    const [count, setCount] = useState(60);
 
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            if (count > 0) {setCount((prevCount) => prevCount - 1)};
+
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <div>
+            <h3>Timer: {count}</h3>
             {props.comments.map((comment, index) => (
                 <Box
                     sx={{ display: 'flex-wrap', mx: '2px', transform: 'scale(0.8)' }}

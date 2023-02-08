@@ -3,26 +3,33 @@ const {DataTypes, Model} = require("sequelize");
 const sequelize = require('../db').sequelize;
 const jwt = require('jsonwebtoken');
 const {myCache, cacheMiddleware} = require('../cache')
+const path = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+
 const verifyToken = (req, res, next) => {
     // Get the token from the request headers
-    const token = req.headers['Authorization'];
-
+    const token = req.headers['authorization'];
 
     // If there is no token, return a 401 error
     if (!token) {
-        return res.redirect(401,'/user',{ message: 'No token provided' });
+        console.log('no token')
+        return res.redirect(401,'/login',{ message: 'No token provided' });
     }
 
     // Verify the token using the secret
-    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
         // If the token is invalid, return a 401 error
         if (err) {
-            return res.redirect(401,'/user',{ message: 'Invalid token' });
+            console.log(err)
+            return res.status(401).send({ message: 'Invalid token' });
         }
+
 
         // Save the decoded token to the request object
         req.decoded = decoded;
-
         // Call the next middleware function
         next();
     });
@@ -76,6 +83,7 @@ photoRoute.get('/', async (req, res) => {
     }))
 })
 photoRoute.post('/', verifyToken, async (req, res) => {
+
     const userId = req.query.userId;
     const photoName = req.body.photo.name;
     const photoSource = req.body.photo.src
@@ -87,7 +95,7 @@ photoRoute.post('/', verifyToken, async (req, res) => {
         })
     )
 })
-photoRoute.get('/:id',cacheMiddleware, cacheController,  async (req, res) => {
+photoRoute.get('/:id', cacheController, cacheMiddleware,  async (req, res) => {
 
 })
 photoRoute.post('/:id',
@@ -97,7 +105,8 @@ photoRoute.post('/:id',
     const comment = req.body.comment;
     const commentId = req.body.commentId;
     const userId = req.query.userId;
-    const action = req.params.action;
+    const action = req.query.action;
+
     console.log({
         photoId:photoId,
         comment:comment,
@@ -107,6 +116,7 @@ photoRoute.post('/:id',
         }
     )
     if (!action || action === 'createComment') {
+
         res.send(
             await Comment.create({
                 userId: userId,

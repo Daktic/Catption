@@ -7,6 +7,15 @@ const NavBar = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [username, setUsername] = useState('');
 
+    const logout = () => {
+        // Clear user session/token
+        localStorage.removeItem("token");
+        // Reset State
+        setIsAuthenticated(false);
+        // Redirect to the login page
+        window.location.replace("/");
+    };
+
     useEffect(() => {
         // check if the user has a JWT token
         const token = localStorage.getItem('token');
@@ -19,8 +28,11 @@ const NavBar = () => {
         }
     }, []);
 
+
+
+
     return (
-        <div className={"loginStatus"} sx={{
+        <div className={"loginStatus"} style={{
             display: 'inline-block',
             justifyContent: 'flex-end',
             alignItems: 'center',
@@ -31,6 +43,8 @@ const NavBar = () => {
         }}>
             {window.location.pathname === '/' ? '' : <Link to="/">Home</Link> }
             {isAuthenticated ? <p>You are logged in as <b>{username}</b></p> : <Link to="/login">Login</Link>}
+            <p onClick={logout}>Logout</p>
+
         </div>
     )
 }

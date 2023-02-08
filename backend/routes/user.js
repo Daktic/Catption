@@ -42,7 +42,7 @@ userRoute.post('/', async (req, res, next) => {
             return res.status(400).json({error: 'Invalid email or password'});
         }
         // create a JWT token id the above two statements do not return
-        const token = jwt.sign({ userId: user.id }, process.env.TOKEN_SECRET, {expiresIn: '1d'});
+        const token = jwt.sign({ userId: user.id }, process.env.TOKEN_SECRET, {expiresIn: 60});
 
         // return the token and the user object
         return res.json({
@@ -55,6 +55,16 @@ userRoute.post('/register', async (req, res) => {
     res.send(
         await User.create({username:username, password:hashed_password}) //return UserId
     )
+})
+
+userRoute.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.sendStatus(500);
+        }
+        res.clearCookie('session_id');
+        res.redirect('/');
+    })
 })
 
 

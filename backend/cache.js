@@ -3,10 +3,12 @@ const myCache = new NodeCache();
 
 const cacheMiddleware = (req, res, next) => {
     try {
-        if (myCache.has('photosComments')) {
-            return res.send(myCache.get('photosComments'))
+        const data = myCache.get('photosComments');
+        if (data) {
+            res.send(data);
+            return;
         }
-        return next();
+        next();
     } catch (err) {
         console.log(err);
         throw err;
