@@ -48,7 +48,7 @@ paths:
           description: Error
   /photo:
     get:
-      summary: retrieves all photos
+      summary: Retrieves all photos
       produces:
         - application/json
       responses:
