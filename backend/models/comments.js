@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
             references: {
                 model: 'Users',
                 key: 'id'
+            },
+            upVotes: {
+                type: DataTypes.INTEGER,
+                default: 0
             }
         },
         commentText: {
