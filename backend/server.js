@@ -34,18 +34,39 @@ app.get('/',(req,res) => {
         res.sendFile('views/index.html',{root:__dirname})
 });
 app.post('/login', async (req, res) => {
-    const dbRes = await User.findAll({
-        attributes: ['password'],
-        where: {
-            username: req.body.username
-        }
-    })
-    const dbPassword = dbRes[0].dataValues.password;
+    // Check if the user is registering
+    const username = req.body.username;
 
-    if(await bcrypt.compare(req.body.password, dbPassword)) {
-        res.send("success!")
+    if (Boolean(req.query.register) === true) {
+
+        const user = await User.findOne({
+            where: {username: username}
+        })
+        if (user) {
+            return res.status(400).json({error: 'Username taken'});
+        }
+        else {
+            const saltRounds = 1;
+            const hashed_password = await  bcrypt.hash(req.body.password, saltRounds);
+            const userId = await User.create({username:username, password:hashed_password}) //return UserId
+            if (userId) {
+                return res.status(201).json({success: 'User created'});
+            }
+        }
     } else {
-        res.send("invalid username/password")
+        const dbRes = await User.findAll({
+            attributes: ['password'],
+            where: {
+                username: req.body.username
+            }
+        })
+        const dbPassword = dbRes[0].dataValues.password;
+
+        if (await bcrypt.compare(req.body.password, dbPassword)) {
+            res.send("success!")
+        } else {
+            res.send("invalid username/password")
+        }
     }
 })
 

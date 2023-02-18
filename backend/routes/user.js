@@ -27,13 +27,13 @@ userRoute.get('/:id', async (req, res) => {
     )
 });
 userRoute.post('/', async (req, res, next) => {
-    const username = req.body.username;
+        const username = req.body.username;
 
-       const user = await User.findOne({
-               where: {username: username}
-           })
+        const user = await User.findOne({
+            where: {username: username}
+        })
         if (!user) {
-            return res.status(400).json({ error: 'Invalid email or password'});
+            return res.status(400).json({error: 'Invalid email or password'});
         }
         console.log(user)
         // compare the plaintext password with the hashed password
@@ -42,21 +42,13 @@ userRoute.post('/', async (req, res, next) => {
             return res.status(400).json({error: 'Invalid email or password'});
         }
         // create a JWT token id the above two statements do not return
-        const token = jwt.sign({ userId: user.id }, process.env.TOKEN_SECRET, {expiresIn: 60});
+        const token = jwt.sign({userId: user.id}, process.env.TOKEN_SECRET, {expiresIn: 60});
 
         // return the token and the user object
         return res.json({
-            success: { token, user }
+            success: {token, user}
         });
 })
-userRoute.post('/register', async (req, res) => {
-    const username = req.body.username;
-    const hashed_password = await  bcrypt.hash(req.body.password, saltRounds);
-    res.send(
-        await User.create({username:username, password:hashed_password}) //return UserId
-    )
-})
-
 userRoute.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {

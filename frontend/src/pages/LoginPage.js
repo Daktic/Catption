@@ -9,30 +9,70 @@ import Dialog from '@mui/material/Dialog';
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
-    const [open, setOpen] = React.useState(false);
+    const [success, setSuccess] = useState(false);
+    const [open, setOpen] = useState(false);
     const [hasToken, setHasToken] = useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    useEffect(() => {
-        // check if the user has a JWT token
-        const token = localStorage.getItem('token');
-        if (token) {
-            setHasToken(true);
-        } else {
-            setHasToken(false);
+    const [registerToggle, setRegisterToggle] = useState(false);
+    const [passwordsMatch, setPasswordsMatch] = useState(
+        {
+            bool: false,
+            style: {
+                border: "2px solid red"
+            }
         }
-    }, []);
+);
 
+
+    const handleMouseOver = (e) => {
+        e.target.style.color ='blue';
+        e.target.style.cursor = 'pointer';
+    }
+    const handleMouseOut = (e) => {
+        e.target.style.color = 'black';
+        e.target.style.cursor = 'default';
+    };
+    const handleRegisterToggle =() => {
+        setRegisterToggle(!registerToggle)
+    }
+    const handleRegisterClick = async () => {
+        setError('')
+
+        if (!username || !password) {
+            setError('Please enter a username and password');
+            return;
+        } else if (passwordsMatch.bool === false) {
+            setError('Passwords do not match');
+            return;
+        }
+        try {
+            const response = await fetch(
+                'http://localhost:80/login?register=true',
+                {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password}),
+                }
+            )
+            const data = await response.json();
+            if (data.error) {
+                setError(data.error)
+            } else if (data.success) {
+                setSuccess(true);
+                setError('User Created! \n Please login');
+                handleRegisterToggle();
+            } else {
+                console.log(data)
+            }
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        }
+    }
 
     const handleSubmit = (e) => {
+        setError('')
         e.preventDefault();
         // validate form fields
         if (!username || !password) {
@@ -53,7 +93,7 @@ const LoginPage = () => {
                     localStorage.setItem('userName', data.success.user.username);
                     window.location.href = '/';
                 } else if (data.error) {
-                    handleClickOpen();
+
                     setError(data.error);
                 }
                 else {
@@ -68,17 +108,62 @@ const LoginPage = () => {
             });
     };
 
+    useEffect(() => {
+        // check if the user has a JWT token
+
+        if (error) {
+            setOpen(true);
+        }
+    }, [error]);
+    const handleClose = () => {
+        setOpen(false);
+        setError('')
+    };
+
+    useEffect(() => {
+        // check if the user has a JWT token
+        const token = localStorage.getItem('token');
+        if (token) {
+            setHasToken(true);
+        } else {
+            setHasToken(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        // check if the passwords match
+        if (password === confirmPassword) {
+            setPasswordsMatch({
+                bool: true,
+                style: {
+                    border: "2px solid green"
+                }
+            });
+        } else {
+            setPasswordsMatch({
+                bool: false,
+                style: {
+                    border: "2px solid red"
+                }
+            });
+        }
+    }, [password,confirmPassword]);
+
+
+
+
     return (
         <div style={{padding: '20%'}}>
 
-            {error && <Dialog
-                open={open}
+            {error &&
+                <Dialog
                 onClose={handleClose}
+                open={open}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {"Error:"}
+                    {success?"Success:":"Error:"}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
@@ -100,17 +185,52 @@ const LoginPage = () => {
                     />
                 </label>
                 <br />
-                <label>
-                    Password:
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </label>
+                    <label>
+                        Password:
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+
+                        />
+                    </label>
                 <br />
-                {error && <p>{error}</p>}
-                <button type="submit">Login</button>
+                <div id={"confirmPassword"} hidden={!registerToggle}>
+                    <label>
+                        Confirm Password:
+                        <input
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            style={passwordsMatch.style}
+                        />
+                    </label>
+                    <br />
+                </div>
+
+                <div id={"loginButton"} hidden={registerToggle}>
+                <Button
+                    type="submit"
+                    variant={"filled"}
+                    sx={{background:'gray'}}
+                >Login</Button>
+                </div>
+                    <a
+                        onClick={handleRegisterToggle}
+                        onMouseOver={handleMouseOver}
+                        onMouseLeave={handleMouseOut}
+
+                    ><p>{registerToggle?"Already registered?":"Not registered?"}</p></a>
+
+                <div hidden={!registerToggle}>
+                    <Button
+                        variant={"filled"}
+                        onClick={handleRegisterClick}
+                        sx={{background:'green', marginLeft:5
+                        }}
+                    >Register</Button>
+                </div>
+
             </form>
     </div>
 

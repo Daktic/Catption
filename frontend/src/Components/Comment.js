@@ -53,19 +53,52 @@ const Comments = (props) => {
                 })
         }
     const [count, setCount] = useState(60);
+    const timeAgo = (tz) => {
+        // Create a new Date object from the tz string
+        const date = new Date(tz);
 
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            if (count > 0) {setCount((prevCount) => prevCount - 1)};
+        // Calculate the difference in milliseconds
+        const difference = Date.now() - date.getTime();
 
-        }, 1000);
+        // Calculate the difference in seconds, minutes, hours, and days
+        const seconds = difference / 1000;
+        const minutes = seconds / 60;
+        const hours = minutes / 60;
+        const days = hours / 24;
 
-        return () => clearInterval(intervalId);
-    }, []);
+        // Return the difference as a string in the format "days hours minutes seconds"
+        let timeStruct = {};
+
+        if (days >= 1) {
+            timeStruct.type = "Day";
+            timeStruct.time =  Math.floor(days);
+        } else if (hours >= 1) {
+            timeStruct.type = "Hour";
+            timeStruct.time = Math.floor(hours % 24);
+        } else if (minutes >= 1) {
+            timeStruct.type = "Minute";
+            timeStruct.time = Math.floor(minutes % 60);
+
+        } else if (seconds) {
+            timeStruct.type = "Second";
+            timeStruct.time = Math.floor(seconds % 60);
+        }
+
+        return timeStruct;
+
+    };
+
+    // useEffect(() => {
+    //     const intervalId = setInterval(() => {
+    //         if (count > 0) {setCount((prevCount) => prevCount - 1)};
+    //
+    //     }, 1000);
+    //
+    //     return () => clearInterval(intervalId);
+    // }, []);
 
     return (
         <div>
-            <h3>Timer: {count}</h3>
             {props.comments.map((comment, index) => (
                 <Box
                     sx={{ display: 'flex-wrap', mx: '2px', transform: 'scale(0.8)' }}
@@ -78,10 +111,10 @@ const Comments = (props) => {
                     >
                         <div>
                             <Typography variant="body2" sx={{display: 'inline-block', marginRight:'20%', marginLeft:'5%'}}>
-                                UserName
+                                {comment.username}
                             </Typography>
                             <Typography sx={{ fontSize: 14, display: 'inline-block'  }} color="text.secondary" gutterBottom>
-                                posted x hours ago
+                                posted {timeAgo(comment.createdAt).time} {timeAgo(comment.createdAt).type}{timeAgo(comment.createdAt).time > 1 ? 's' :''} ago
                             </Typography>
                         </div>
 

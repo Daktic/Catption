@@ -1,5 +1,5 @@
 const express = require("express");
-const {DataTypes, Model} = require("sequelize");
+const {DataTypes, Model, QueryTypes} = require("sequelize");
 const sequelize = require('../db').sequelize;
 const jwt = require('jsonwebtoken');
 const {myCache, cacheMiddleware} = require('../cache')
@@ -46,12 +46,18 @@ const cacheController = async (req, res) => {
             }
         });
 
-        const comments = await Comment.findAll({
-            attributes: ['commentText'],
-            where: {
-                photoId: photoId
+            // I do not understand why I must bring this in. do I do the same for the other models?
+        const User = require('../models/users')(sequelize, DataTypes,
+            Model);
+
+        const comments = await sequelize.query(
+            'SELECT "commentText","username","Comments"."createdAt" FROM "Comments" JOIN "Users" ON "Users"."id" = "Comments"."userId" WHERE "Comments"."photoId" = :photoId', {
+                replacements: {
+                    photoId: photoId
+                },
+                type: QueryTypes.SELECT
             }
-        })
+        )
 
         const data = {
             photo:photo,
