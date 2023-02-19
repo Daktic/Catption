@@ -54,7 +54,9 @@ const cacheController = async (req, res) => {
     const User = require("../models/users")(sequelize, DataTypes, Model);
 
     const comments = await sequelize.query(
-      'SELECT "commentText","username","upVotes","Comments"."createdAt" FROM "Comments" JOIN "Users" ON "Users"."id" = "Comments"."userId" WHERE "Comments"."photoId" = :photoId',
+      'SELECT "Comments"."id", "commentText","username","upVotes","Comments"."createdAt" FROM "Comments" JOIN "Users" ' +
+        'ON "Users"."id" = "Comments"."userId" WHERE "Comments"."photoId" = :photoId ' +
+        'ORDER BY "upVotes" DESC',
       {
         replacements: {
           photoId: photoId,
@@ -119,6 +121,14 @@ photoRoute.post("/:id", verifyToken, async (req, res) => {
   const commentId = req.body.commentId;
   const userId = req.query.userId;
   const action = req.query.action;
+  //
+  // console.log(
+  //   `photoId: ${photoId} \n`,
+  //   `comment: ${comment} \n`,
+  //   `commentId: ${commentId} \n`,
+  //   `userId: ${userId} \n`,
+  //   `action: ${action} \n`
+  // );
 
   if (!action || action === "createComment") {
     res.send(

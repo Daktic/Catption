@@ -118,8 +118,12 @@ const Comments = (props) => {
   };
   const handleVote = async (e) => {
     const userId = localStorage.getItem("userID");
-    console.log(userId);
+
+    //get the parent's parent id to identify which comment to update
+    const commentId = e.currentTarget.parentNode.parentNode.getAttribute("id");
     const arrowDirection = e.currentTarget.getAttribute("arrowdirection");
+
+    // Axios request to the backend server
     const urlPost =
       "http://localhost:80/photo/" +
       id.toString() +
@@ -130,7 +134,7 @@ const Comments = (props) => {
         Authorization: localStorage.getItem("token"),
       },
     };
-    const data = { commentId: 1 };
+    const data = { commentId: commentId };
     try {
       const response = await axios.post(urlPost, data, config);
     } catch (error) {
@@ -178,7 +182,7 @@ const Comments = (props) => {
   return (
     <div>
       {props.comments.map((comment, index) => (
-        <Box sx={commentStyles.outerCommentBox} key={index}>
+        <Box sx={commentStyles.outerCommentBox} key={index} id={comment.id}>
           <Card sx={commentStyles.innerVoteBox}>
             <ArrowUpwardIcon
               arrowdirection={"upvote"}
