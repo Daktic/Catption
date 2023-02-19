@@ -37,7 +37,7 @@ PhotoModel.hasMany(CommentModel, {
 CommentModel.belongsTo(PhotoModel);
 
 sequelize.sync({ force: false });
-CommentModel.sync({ force: true });
+//CommentModel.sync({ force: true });
 
 module.exports = {
   sequelize: sequelize,

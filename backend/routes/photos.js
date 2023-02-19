@@ -120,13 +120,6 @@ photoRoute.post("/:id", verifyToken, async (req, res) => {
   const userId = req.query.userId;
   const action = req.query.action;
 
-  console.log({
-    photoId: photoId,
-    comment: comment,
-    commentId: commentId,
-    userId: userId,
-    action: action,
-  });
   if (!action || action === "createComment") {
     res.send(
       await Comment.create({
@@ -142,6 +135,49 @@ photoRoute.post("/:id", verifyToken, async (req, res) => {
           id: commentId,
         },
       })
+    );
+  } else if (action === "upvote") {
+    const currentUpvoteCount = await Comment.findOne({
+      attributes: ["upVotes"],
+      where: {
+        id: commentId,
+      },
+    });
+
+    const newUpvoteCount = currentUpvoteCount.dataValues.upVotes + 1;
+    console.log(newUpvoteCount);
+    res.send(
+      await Comment.update(
+        {
+          upVotes: newUpvoteCount,
+        },
+        {
+          where: {
+            id: commentId,
+          },
+        }
+      )
+    );
+  } else if (action === "downvote") {
+    const currentUpvoteCount = await Comment.findOne({
+      attributes: ["upVotes"],
+      where: {
+        id: commentId,
+      },
+    });
+
+    const newUpvoteCount = currentUpvoteCount.dataValues.upVotes - 1;
+    res.send(
+      await Comment.update(
+        {
+          upVotes: newUpvoteCount,
+        },
+        {
+          where: {
+            id: commentId,
+          },
+        }
+      )
     );
   }
 });

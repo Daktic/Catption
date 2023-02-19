@@ -67,7 +67,7 @@ const Comments = (props) => {
   };
 
   const handleKeyDown = async (event) => {
-    const userId = 1;
+    const userId = localStorage.getItem("userID");
     if (event.key === "Enter" && commentText.length > 0 < 255) {
       const urlPost =
         "http://localhost:80/photo/" +
@@ -116,12 +116,30 @@ const Comments = (props) => {
         //console.log(response)
       });
   };
-  const handleVote = (e) => {
-    const arrowDirection = e.currentTarget.getAttribute("arrowDirection");
-    if (arrowDirection === "upvote") {
-      console.log("up");
-    } else if (arrowDirection === "downvote") {
-      console.log("down");
+  const handleVote = async (e) => {
+    const userId = localStorage.getItem("userID");
+    console.log(userId);
+    const arrowDirection = e.currentTarget.getAttribute("arrowdirection");
+    const urlPost =
+      "http://localhost:80/photo/" +
+      id.toString() +
+      `?userId=${userId}&action=${arrowDirection}`;
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+    const data = { commentId: 1 };
+    try {
+      const response = await axios.post(urlPost, data, config);
+    } catch (error) {
+      if (error.response.status === 401) {
+        alert(error.response.data.message);
+        window.location.href = "/login";
+      } else {
+        console.error(error);
+      }
     }
   };
   const timeAgo = (tz) => {
@@ -163,12 +181,12 @@ const Comments = (props) => {
         <Box sx={commentStyles.outerCommentBox} key={index}>
           <Card sx={commentStyles.innerVoteBox}>
             <ArrowUpwardIcon
-              arrowDirection={"upvote"}
+              arrowdirection={"upvote"}
               sx={commentStyles.upvote}
               onClick={handleVote}
             />
             <ArrowDownwardIcon
-              arrowDirection={"downvote"}
+              arrowdirection={"downvote"}
               sx={commentStyles.downvote}
               onClick={handleVote}
             />
