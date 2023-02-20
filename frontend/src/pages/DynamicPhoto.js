@@ -43,11 +43,10 @@ const DynamicPhoto = () => {
         <img
           src={image.src}
           style={{
-            width: "100%",
+            width: "50%",
             padding: 20,
             display: "flex",
             flexShrink: 1,
-            margin: "10%",
           }}
         />
         <div className={"commentBox"}>
