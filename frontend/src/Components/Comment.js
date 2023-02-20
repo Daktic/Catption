@@ -106,7 +106,8 @@ const Comments = (props) => {
     if (
       showCommentForm === false &&
       commentText.length > 0 &&
-      commentText.length < 255
+      commentText.length < 255 &&
+      event.key === "enter"
     ) {
       submitComment(event);
     }

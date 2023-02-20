@@ -83,6 +83,7 @@ const cacheController = async (req, res) => {
 // Bring in Models
 const Photo = require("../models/photos")(sequelize, DataTypes, Model);
 const Comment = require("../models/comments")(sequelize, DataTypes, Model);
+const Vote = require("../models/votes")(sequelize, DataTypes, Model);
 
 const photoRoute = express.Router();
 
@@ -130,6 +131,54 @@ photoRoute.post("/:id", verifyToken, async (req, res) => {
   //   `action: ${action} \n`
   // );
 
+  //This function checks if the user has voted this direction already
+  const checkVotesEligibliltiy = async (newVoteValue) => {
+    const voteValue = await Vote.findOne({
+      where: {
+        commentId: commentId,
+        userId: userId,
+      },
+    });
+
+    if (voteValue) {
+      console.log(
+        `new Vote Value: ${newVoteValue} \n`,
+        `old Vote Value: ${voteValue.value} \n`,
+        `new Total: ${newVoteValue + voteValue.value} \n`
+      );
+    }
+
+    if (!voteValue) {
+      console.log(`commentId: ${commentId} \n`, `userId: ${userId} \n`);
+      await Vote.create({
+        commentId: commentId,
+        userId: userId,
+        value: newVoteValue,
+      });
+      return true;
+    } else if (
+      voteValue.value + newVoteValue <= 1 &&
+      voteValue.value + newVoteValue >= -1
+    ) {
+      console.log(voteValue.value + newVoteValue);
+      try {
+        const newvalue = voteValue.value + newVoteValue;
+        await voteValue.update({
+          value: newvalue,
+          where: {
+            commentId: commentId,
+            userId: userId,
+          },
+        });
+        return true;
+      } catch (err) {
+        console.log("failed");
+        return false;
+      }
+    }
+    return false;
+  };
+
   if (!action || action === "createComment") {
     res.send(
       await Comment.create({
@@ -147,6 +196,10 @@ photoRoute.post("/:id", verifyToken, async (req, res) => {
       })
     );
   } else if (action === "upvote") {
+    //revert if upvote check fails
+    if ((await checkVotesEligibliltiy(1)) === false) {
+      return;
+    }
     const currentUpvoteCount = await Comment.findOne({
       attributes: ["upVotes"],
       where: {
@@ -155,7 +208,6 @@ photoRoute.post("/:id", verifyToken, async (req, res) => {
     });
 
     const newUpvoteCount = currentUpvoteCount.dataValues.upVotes + 1;
-    console.log(newUpvoteCount);
     res.send(
       await Comment.update(
         {
@@ -169,6 +221,11 @@ photoRoute.post("/:id", verifyToken, async (req, res) => {
       )
     );
   } else if (action === "downvote") {
+    //revert if upvote check fails
+    if ((await checkVotesEligibliltiy(-1)) === false) {
+      return;
+    }
+
     const currentUpvoteCount = await Comment.findOne({
       attributes: ["upVotes"],
       where: {

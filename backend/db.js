@@ -16,10 +16,12 @@ const sequelize = new Sequelize(
 const User = require("./models/users");
 const Photo = require("./models/photos");
 const Comment = require("./models/comments");
+const Votes = require("./models/votes");
 
 const UserModel = User(sequelize, DataTypes);
 const PhotoModel = Photo(sequelize, DataTypes);
 const CommentModel = Comment(sequelize, DataTypes);
+const voteModel = Votes(sequelize, DataTypes);
 
 UserModel.hasMany(PhotoModel, {
   foreignKey: "id",
@@ -35,6 +37,11 @@ PhotoModel.hasMany(CommentModel, {
   foreignKey: "id",
 });
 CommentModel.belongsTo(PhotoModel);
+
+UserModel.hasMany(voteModel, {
+  foreignKey: "id",
+});
+voteModel.belongsTo(UserModel);
 
 sequelize.sync({ force: false });
 //CommentModel.sync({ force: true });
