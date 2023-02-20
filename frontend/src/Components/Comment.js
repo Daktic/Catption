@@ -2,7 +2,7 @@ import { Box, Card, Typography, Button, TextField } from "@mui/material";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -59,7 +59,43 @@ const Comments = (props) => {
   const [showCommentForm, setShowCommentForm] = useState(true);
   const [commentText, setCommentText] = useState("");
 
+  const textFieldRef = useRef(null);
+
+  const submitComment = async (text) => {
+    const userId = localStorage.getItem("userID");
+    const urlPost =
+      "http://localhost:80/photo/" +
+      id.toString() +
+      `?userId=${userId}&action=createComment`;
+    const data = { comment: commentText };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+    try {
+      const response = await axios.post(urlPost, data, config);
+    } catch (error) {
+      if (error.response.status === 401) {
+        alert(error.response.data.message);
+        window.location.href = "/login";
+      } else {
+        console.error(error);
+      }
+    }
+    setShowCommentForm(!showCommentForm);
+  };
+
   const handleAddComment = () => {
+    if (
+      showCommentForm === false &&
+      commentText.length > 0 &&
+      commentText.length < 255
+    ) {
+      const ref = textFieldRef.current;
+      submitComment(ref);
+    }
     setShowCommentForm(!showCommentForm);
   };
   const handleChange = (event) => {
@@ -67,31 +103,12 @@ const Comments = (props) => {
   };
 
   const handleKeyDown = async (event) => {
-    const userId = localStorage.getItem("userID");
-    if (event.key === "Enter" && commentText.length > 0 < 255) {
-      const urlPost =
-        "http://localhost:80/photo/" +
-        id.toString() +
-        `?userId=${userId}&action=createComment`;
-      const data = { comment: commentText };
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-      };
-      try {
-        const response = await axios.post(urlPost, data, config);
-      } catch (error) {
-        if (error.response.status === 401) {
-          alert(error.response.data.message);
-          window.location.href = "/login";
-        } else {
-          console.error(error);
-        }
-      }
-
-      setShowCommentForm(!showCommentForm);
+    if (
+      showCommentForm === false &&
+      commentText.length > 0 &&
+      commentText.length < 255
+    ) {
+      submitComment(event);
     }
   };
 
@@ -239,6 +256,19 @@ const Comments = (props) => {
           </Card>
         </Box>
       ))}
+
+      <div hidden={showCommentForm}>
+        <Box sx={{ marginTop: 3 }}>
+          <TextField
+            onKeyDown={handleKeyDown}
+            onChange={handleChange}
+            value={commentText}
+            ref={textFieldRef}
+          >
+            Comment
+          </TextField>
+        </Box>
+      </div>
       <Button
         variant="contained"
         endIcon={<AddCommentIcon />}
@@ -247,17 +277,6 @@ const Comments = (props) => {
       >
         Add Comment
       </Button>
-      <div hidden={showCommentForm}>
-        <Box sx={{ marginTop: 3 }}>
-          <TextField
-            onKeyDown={handleKeyDown}
-            onChange={handleChange}
-            value={commentText}
-          >
-            Comment
-          </TextField>
-        </Box>
-      </div>
     </div>
   );
 };
