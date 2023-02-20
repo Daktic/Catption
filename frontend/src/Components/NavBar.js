@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
 
 const NavBar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -58,14 +59,27 @@ const NavBar = () => {
       display: "flex",
       alignSelf: "center",
       marginLeft: "25%",
+      marginRight: "25%",
+    },
+    homeIcon: {
+      margin: "10px",
+    },
+    loginStatus: {
+      marginLeft: "10px",
     },
   };
 
   return (
     <div className={"loginStatus"} style={navbarStyles.outerBox}>
-      {window.location.pathname === "/" ? "" : <Link to="/">Home</Link>}
+      {window.location.pathname === "/" ? (
+        ""
+      ) : (
+        <Link to="/">
+          <HomeIcon sx={navbarStyles.homeIcon} />
+        </Link>
+      )}
       {isAuthenticated && (
-        <p>
+        <p style={navbarStyles.loginStatus}>
           You are logged in as <b>{username}</b>
         </p>
       )}
