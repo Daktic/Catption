@@ -9,7 +9,7 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      - POSTGRES_USER=daktic
+      - POSTGRES_USER=daktic #for some reason env variables arenot working here.
       - POSTGRES_PASSWORD=daktic2
       - POSTGRES_DB=photo_contest
       - POSTGRES_HOST_AUTH_METHOD= "trust"
