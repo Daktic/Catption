@@ -9,6 +9,7 @@ const { sequelize } = require("./db");
 const { DataTypes, Model } = require("sequelize");
 const User = require("./models/users")(sequelize, DataTypes, Model);
 const app = express();
+const path = require("path");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,15 +26,19 @@ app.use(
 );
 
 let session;
+
+app.use(express.static(path.join(__dirname, "build")));
 app.get("/", (req, res) => {
   session = req.session;
   if (session.userid) {
     res.send("Welcome User <a href='/logout'>click to logout</a>");
-  } else res.sendFile("views/index.html", { root: __dirname });
+  } else res.sendFile(path.join(__dirname, "build", "index.html"));
+  //res.sendFile("views/index.html", { root: __dirname });
 });
 app.post("/login", async (req, res) => {
   // Check if the user is registering
   const username = req.body.username;
+  console.log("here");
 
   if (Boolean(req.query.register) === true) {
     const user = await User.findOne({
@@ -69,7 +74,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-const port = 4000;
+const port = 80;
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });

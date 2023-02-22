@@ -34,8 +34,12 @@ const verifyToken = (req, res, next) => {
 };
 
 const onlyOwner = (req, res, next) => {
-  const token = req.headers["authorization"];
-  console.log(token);
+  // Get the token from the req
+  const token = req.decoded;
+
+  if (token.userName !== daktic) {
+    res.send(403);
+  }
   next();
 };
 
@@ -94,22 +98,18 @@ photoRoute.get("/", async (req, res) => {
     })
   );
 });
-photoRoute.post(
-  "/",
-  //verifyToken, onlyOwner,
-  async (req, res) => {
-    const userId = req.query.userId;
-    const photoName = req.body.photo.name;
-    const photoSource = req.body.photo.src;
-    res.send(
-      await Photo.create({
-        name: photoName,
-        posterId: userId,
-        src: photoSource,
-      })
-    );
-  }
-);
+photoRoute.post("/", verifyToken, onlyOwner, async (req, res) => {
+  const userId = req.query.userId;
+  const photoName = req.body.photo.name;
+  const photoSource = req.body.photo.src;
+  res.send(
+    await Photo.create({
+      name: photoName,
+      posterId: userId,
+      src: photoSource,
+    })
+  );
+});
 photoRoute.get(
   "/:id",
   cacheController,

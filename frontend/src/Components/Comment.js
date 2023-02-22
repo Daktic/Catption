@@ -107,7 +107,7 @@ const Comments = (props) => {
       showCommentForm === false &&
       commentText.length > 0 &&
       commentText.length < 255 &&
-      event.key === "enter"
+      event.key === "Enter"
     ) {
       submitComment(event);
     }
@@ -115,24 +115,26 @@ const Comments = (props) => {
 
   const handleClick = (currentTarget) => {
     //console.log(currentTarget.id)
-    axios
-      .post(
-        "http://localhost:80/photo/" + id.toString() + `?action=deleteComment`,
-        { commentId: currentTarget.id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer JWT_ACCESS_TOKEN",
-          },
-        }
-      )
-      .then((response) => {
-        // let updatedComments = [...props.comments];
-        // updatedComments.push({commentText: commentText});
-        // props.onEnter(updatedComments);
-        // setCommentText('')
-        //console.log(response)
-      });
+    // axios
+    //   .post(
+    //     "http://localhost:80/photo/" + id.toString() + `?action=deleteComment`,
+    //     { commentId: currentTarget.id },
+    //     {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: localStorage.getItem("token"),
+    //       },
+    //     }
+    //   )
+    //   .then((response) => {
+    //     // let updatedComments = [...props.comments];
+    //     // updatedComments.push({commentText: commentText});
+    //     // props.onEnter(updatedComments);
+    //     // setCommentText('')
+    //     //console.log(response)
+    //   });
+
+    console.log("coming at some point...");
   };
   const handleVote = async (e) => {
     const userId = localStorage.getItem("userID");
