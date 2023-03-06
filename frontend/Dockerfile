@@ -4,11 +4,13 @@ WORKDIR /app
 
 COPY package.json .
 
-RUN npm install
+RUN NPM install
 
 COPY . ./
 
 RUN npm run build
+
+CMD ["npm", "start"]
 
 
 FROM nginx:alpine
@@ -27,4 +29,3 @@ EXPOSE 3000 80
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
-CMD ["npm", "start"]
