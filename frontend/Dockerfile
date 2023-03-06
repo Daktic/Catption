@@ -6,6 +6,8 @@ COPY package.json .
 
 RUN NPM install
 
+RUN NPM install react-scripts
+
 COPY . ./
 
 RUN npm run build
