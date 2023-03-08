@@ -8,6 +8,6 @@ RUN npm install --silent && npm rebuild bcrypt
 
 COPY . .
 
-EXPOSE 4000
+EXPOSE 8080
 
 CMD ["npm", "start"]
