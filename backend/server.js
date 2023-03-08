@@ -74,7 +74,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-const port = 80;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
